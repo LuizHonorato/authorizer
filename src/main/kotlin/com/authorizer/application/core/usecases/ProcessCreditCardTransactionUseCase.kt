@@ -14,7 +14,7 @@ class ProcessCreditCardTransactionUseCase(
     private val createTransactionOutputPort: CreateTransactionOutputPort
 ) {
     fun execute(input: ProcessCreditCardTransactionInput): String {
-        val account = findAccountOutputPort.findAccountById(input.accountId)
+        val account = findAccountOutputPort.findAccountByUuId(input.accountId)
             ?: throw NotFoundException("Account with id ${input.accountId} not found")
 
         val transaction = Transaction(accountId = account.id, amount = input.totalAmount, mcc = input.mcc)

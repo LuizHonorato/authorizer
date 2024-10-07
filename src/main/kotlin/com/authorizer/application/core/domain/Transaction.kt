@@ -17,7 +17,7 @@ class Transaction(
     val updatedAt: Instant? = Instant.now(),
     val deletedAt: Instant? = null
 ) {
-    fun resolveBalanceType(): BalanceTypeEnum = when (mcc) {
+    private fun resolveBalanceType(): BalanceTypeEnum = when (mcc) {
         "5411", "5412" -> BalanceTypeEnum.FOOD
         "5811", "5812" -> BalanceTypeEnum.MEAL
         else -> BalanceTypeEnum.CASH

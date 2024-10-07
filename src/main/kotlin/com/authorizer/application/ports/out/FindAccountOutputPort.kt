@@ -4,5 +4,5 @@ import com.authorizer.application.core.domain.Account
 import java.util.*
 
 interface FindAccountOutputPort {
-    fun findAccountById(id: UUID): Account?
+    fun findAccountByUuId(uuid: UUID): Account?
 }
