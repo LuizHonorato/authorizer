@@ -1,6 +1,7 @@
 package com.authorizer.adapters.out.repository.entity
 
 import com.authorizer.application.core.domain.Transaction
+import com.authorizer.application.core.domain.enums.BalanceTypeEnum
 import jakarta.persistence.*
 import java.math.BigDecimal
 import java.time.Instant
@@ -16,7 +17,8 @@ class TransactionEntity(
     val uuid: UUID,
     val accountId: Long,
     val amount: BigDecimal,
-    val mcc: String,
+    val balanceType: BalanceTypeEnum,
+    val responseCode: String,
     val createdAt: Instant?,
     val updatedAt: Instant?,
     val deletedAt: Instant?
@@ -26,7 +28,8 @@ class TransactionEntity(
         uuid = transaction.uuid!!,
         accountId = transaction.accountId,
         amount = transaction.amount,
-        mcc = transaction.mcc,
+        balanceType = transaction.balanceType,
+        responseCode = transaction.responseCode!!,
         createdAt = transaction.createdAt,
         updatedAt = transaction.updatedAt,
         deletedAt = transaction.deletedAt

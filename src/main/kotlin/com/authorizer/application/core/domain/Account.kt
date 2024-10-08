@@ -16,7 +16,7 @@ data class Account(
     val updatedAt: Instant? = Instant.now(),
     val deletedAt: Instant? = null
 ) {
-    fun updateBalanceAfterAuthorizationProcess(processCreditCardTransactionOutput: ProcessCreditCardTransactionOutput): Account =
+    fun withdraw(processCreditCardTransactionOutput: ProcessCreditCardTransactionOutput): Account =
         when (processCreditCardTransactionOutput.type) {
             BalanceTypeEnum.FOOD -> this.copy(foodBalance = foodBalance - processCreditCardTransactionOutput.debtValue, updatedAt = Instant.now())
             BalanceTypeEnum.MEAL -> this.copy(mealBalance = mealBalance - processCreditCardTransactionOutput.debtValue, updatedAt = Instant.now())

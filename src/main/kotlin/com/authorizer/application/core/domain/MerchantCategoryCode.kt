@@ -1,15 +1,12 @@
 package com.authorizer.application.core.domain
 
-import com.authorizer.application.core.domain.enums.BalanceTypeEnum
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
-data class Merchant(
+data class MerchantCategoryCode(
     val id: Long? = null,
     val uuid: UUID? = UUID.randomUUID(),
-    val name: String,
-    val preferredBalanceType: BalanceTypeEnum,
-    val fallbackBalanceType: BalanceTypeEnum,
+    val code: String,
     val createdAt: Instant? = Instant.now(),
     val updatedAt: Instant? = Instant.now(),
     val deletedAt: Instant? = null

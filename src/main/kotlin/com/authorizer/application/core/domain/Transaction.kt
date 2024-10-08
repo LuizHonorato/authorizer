@@ -7,24 +7,27 @@ import java.math.BigDecimal
 import java.time.Instant
 import java.util.UUID
 
-class Transaction(
+data class Transaction(
     val id: Long? = null,
     val uuid: UUID? = UUID.randomUUID(),
     val accountId: Long,
     val amount: BigDecimal,
-    val mcc: String,
+    val balanceType: BalanceTypeEnum,
+    val responseCode: String? = null,
     val createdAt: Instant? = Instant.now(),
     val updatedAt: Instant? = Instant.now(),
     val deletedAt: Instant? = null
 ) {
-    fun resolveBalanceType(): BalanceTypeEnum = when (mcc) {
-        "5411", "5412" -> BalanceTypeEnum.FOOD
-        "5811", "5812" -> BalanceTypeEnum.MEAL
-        else -> BalanceTypeEnum.CASH
+    companion object {
+        fun resolveBalanceType(mccCode: String): BalanceTypeEnum = when (mccCode) {
+            "5411", "5412" -> BalanceTypeEnum.FOOD
+            "5811", "5812" -> BalanceTypeEnum.MEAL
+            else -> BalanceTypeEnum.CASH
+        }
     }
 
-    fun processTransaction(account: Account): ProcessCreditCardTransactionOutput =
-        hasSufficientBalance(resolveBalanceType(), amount, account);
+    fun processTransaction(balanceTypeEnum: BalanceTypeEnum, account: Account): ProcessCreditCardTransactionOutput =
+        hasSufficientBalance(balanceTypeEnum, amount, account);
 
     private fun hasSufficientBalance(type: BalanceTypeEnum, amount: BigDecimal, account: Account): ProcessCreditCardTransactionOutput {
         val balance = when (type) {
