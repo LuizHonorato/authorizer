@@ -18,8 +18,8 @@ data class Account(
 ) {
     fun updateBalanceAfterAuthorizationProcess(processCreditCardTransactionOutput: ProcessCreditCardTransactionOutput): Account =
         when (processCreditCardTransactionOutput.type) {
-            BalanceTypeEnum.FOOD -> this.copy(foodBalance = processCreditCardTransactionOutput.finalAmount, updatedAt = Instant.now())
-            BalanceTypeEnum.MEAL -> this.copy(mealBalance = processCreditCardTransactionOutput.finalAmount, updatedAt = Instant.now())
-            BalanceTypeEnum.CASH -> this.copy(cashBalance = processCreditCardTransactionOutput.finalAmount, updatedAt = Instant.now())
+            BalanceTypeEnum.FOOD -> this.copy(foodBalance = foodBalance - processCreditCardTransactionOutput.debtValue, updatedAt = Instant.now())
+            BalanceTypeEnum.MEAL -> this.copy(mealBalance = mealBalance - processCreditCardTransactionOutput.debtValue, updatedAt = Instant.now())
+            BalanceTypeEnum.CASH -> this.copy(cashBalance = cashBalance - processCreditCardTransactionOutput.debtValue, updatedAt = Instant.now())
         }
 }

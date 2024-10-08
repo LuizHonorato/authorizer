@@ -17,7 +17,7 @@ class Transaction(
     val updatedAt: Instant? = Instant.now(),
     val deletedAt: Instant? = null
 ) {
-    private fun resolveBalanceType(): BalanceTypeEnum = when (mcc) {
+    fun resolveBalanceType(): BalanceTypeEnum = when (mcc) {
         "5411", "5412" -> BalanceTypeEnum.FOOD
         "5811", "5812" -> BalanceTypeEnum.MEAL
         else -> BalanceTypeEnum.CASH
@@ -37,7 +37,7 @@ class Transaction(
             return ProcessCreditCardTransactionOutput(
                 ProcessTransactionResponseStatusEnum.APPROVED.code,
                 type,
-                balance - amount
+                amount
             )
         }
 
@@ -45,8 +45,8 @@ class Transaction(
             if (account.cashBalance >= amount) {
                 return ProcessCreditCardTransactionOutput(
                     ProcessTransactionResponseStatusEnum.APPROVED.code,
-                    type,
-                    account.cashBalance - amount,
+                    BalanceTypeEnum.CASH,
+                    amount,
                 )
             }
         }
@@ -54,7 +54,7 @@ class Transaction(
         return ProcessCreditCardTransactionOutput(
             ProcessTransactionResponseStatusEnum.REJECTED_BY_INSUFFICIENT_BALANCE.code,
             type,
-            balance - amount
+            amount
         )
     }
 }

@@ -11,6 +11,7 @@ import java.util.*
 class TransactionEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "transactions_id_seq", sequenceName = "transactions_id_seq", allocationSize = 1)
     val id: Long?,
     val uuid: UUID,
     val accountId: Long,

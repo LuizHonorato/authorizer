@@ -4,6 +4,7 @@ import com.authorizer.application.core.domain.Transaction
 import com.authorizer.application.core.domain.enums.ProcessTransactionResponseStatusEnum
 import com.authorizer.application.core.exceptions.NotFoundException
 import com.authorizer.application.core.usecases.dtos.ProcessCreditCardTransactionInput
+import com.authorizer.application.ports.`in`.ProcessCreditCardTransactionInputPort
 import com.authorizer.application.ports.out.CreateTransactionOutputPort
 import com.authorizer.application.ports.out.FindAccountOutputPort
 import com.authorizer.application.ports.out.UpdateAccountOutputPort
@@ -12,8 +13,8 @@ class ProcessCreditCardTransactionUseCase(
     private val findAccountOutputPort: FindAccountOutputPort,
     private val updateAccountOutputPort: UpdateAccountOutputPort,
     private val createTransactionOutputPort: CreateTransactionOutputPort
-) {
-    fun execute(input: ProcessCreditCardTransactionInput): String {
+): ProcessCreditCardTransactionInputPort {
+    override fun execute(input: ProcessCreditCardTransactionInput): String {
         val account = findAccountOutputPort.findAccountByUuId(input.accountId)
             ?: throw NotFoundException("Account with id ${input.accountId} not found")
 
@@ -21,8 +22,8 @@ class ProcessCreditCardTransactionUseCase(
         val processedTransaction = transaction.processTransaction(account)
 
         if (processedTransaction.code == ProcessTransactionResponseStatusEnum.APPROVED.code) {
-            account.updateBalanceAfterAuthorizationProcess(processedTransaction)
-            updateAccountOutputPort.updateAccount(account)
+            val updatedAccount = account.updateBalanceAfterAuthorizationProcess(processedTransaction)
+            updateAccountOutputPort.updateAccount(updatedAccount)
         }
 
         createTransactionOutputPort.createTransaction(transaction)
