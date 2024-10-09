@@ -6,7 +6,7 @@ Sumário
    * [Pré-requisitos](#Pré-requisitos)
    * [Build](#Build)
    * [Instalação](#Instalação)
-   * [Banco de dados](#Bancodedados)
+   * [Database](#Database)
    * [Execução](#Execução)
    * [Requisição](#Requisição)
    * [Testes](#Testes)
@@ -43,7 +43,7 @@ Instalação
 Para instalar as dependências e buildar o projeto, clone este repositório e abra ele na IDE IntelliJ.
 
 
-Banco de dados
+Database
 ========
 
  Antes de executar a aplicação, precisamos subir o banco de dados. Execute os comandos abaixo para essa finalidade:
