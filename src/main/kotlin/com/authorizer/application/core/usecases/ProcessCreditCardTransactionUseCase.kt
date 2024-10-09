@@ -35,9 +35,8 @@ class ProcessCreditCardTransactionUseCase(
         return processedTransactionOutput.code
     }
 
-    private fun findAccountById(accountId: UUID): Account {
-        return findAccountOutputPort.findAccountByUuId(accountId) ?: throw NotFoundException("Account with id $accountId not found")
-    }
+    private fun findAccountById(accountId: UUID): Account =
+        findAccountOutputPort.findAccountByUuId(accountId) ?: throw NotFoundException("Account with id $accountId not found")
 
     private fun resolveBalanceType(input: ProcessCreditCardTransactionInput): BalanceTypeEnum {
         val merchantCategoryCode = findMerchantCategoryCodeOutputPort.findByMerchantCategoryCode(input.mcc)
@@ -51,7 +50,6 @@ class ProcessCreditCardTransactionUseCase(
         }
     }
 
-    private fun processTransaction(transaction: Transaction, account: Account): ProcessCreditCardTransactionOutput {
-        return transaction.processTransaction(transaction.balanceType, account)
-    }
+    private fun processTransaction(transaction: Transaction, account: Account): ProcessCreditCardTransactionOutput =
+        transaction.processTransaction(transaction.balanceType, account)
 }
