@@ -60,6 +60,8 @@ Banco de dados
  Para rodar a aplicação, execute a mesma através do IntelliJ. 
  Ao rodar a aplicação o Flyway irá executar as migrations para criar as tabelas no banco de dados e cadastrar alguns dados nelas para podermos testar a aplicação. 
  Não se preocupe em cadastrar nenhum dado manualmente.
+
+ As migrations se encontram no caminho `src/resources/db/migration`.
  
 Requisição
 ========
