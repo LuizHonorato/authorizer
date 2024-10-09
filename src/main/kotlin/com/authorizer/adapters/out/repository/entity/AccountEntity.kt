@@ -14,6 +14,7 @@ data class AccountEntity(
     @SequenceGenerator(name = "accounts_id_seq", sequenceName = "accounts_id_seq", allocationSize = 1)
     val id: Long,
     val uuid: UUID,
+    val merchantId: Long,
     val foodBalance: BigDecimal,
     val mealBalance: BigDecimal,
     val cashBalance: BigDecimal,
@@ -24,6 +25,7 @@ data class AccountEntity(
     constructor(account: Account): this(
         id = account.id,
         uuid = account.uuid,
+        merchantId = account.merchantId,
         foodBalance = account.foodBalance,
         mealBalance = account.mealBalance,
         cashBalance = account.cashBalance,
@@ -32,5 +34,5 @@ data class AccountEntity(
         deletedAt = account.deletedAt
     )
 
-    fun toAccount(): Account = Account(id, uuid, foodBalance, mealBalance, cashBalance, createdAt, updatedAt, deletedAt)
+    fun toAccount(): Account = Account(id, uuid, merchantId, foodBalance, mealBalance, cashBalance, createdAt, updatedAt, deletedAt)
 }

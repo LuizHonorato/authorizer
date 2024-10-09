@@ -9,6 +9,7 @@ import java.util.UUID
 data class Account(
     val id: Long,
     val uuid: UUID,
+    val merchantId: Long,
     val foodBalance: BigDecimal,
     val mealBalance: BigDecimal,
     val cashBalance: BigDecimal,
