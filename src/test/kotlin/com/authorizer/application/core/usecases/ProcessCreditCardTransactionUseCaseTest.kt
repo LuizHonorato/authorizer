@@ -5,7 +5,6 @@ import com.authorizer.application.core.domain.Merchant
 import com.authorizer.application.core.domain.MerchantCategoryCode
 import com.authorizer.application.core.domain.enums.BalanceTypeEnum
 import com.authorizer.application.core.domain.enums.ProcessTransactionResponseStatusEnum
-import com.authorizer.application.core.exceptions.NotFoundException
 import com.authorizer.application.core.usecases.dtos.ProcessCreditCardTransactionInput
 import com.authorizer.application.ports.out.*
 import org.junit.jupiter.api.Assertions.*
@@ -47,11 +46,11 @@ class ProcessCreditCardTransactionUseCaseTest {
         val input = ProcessCreditCardTransactionInput(accountId = uuid, totalAmount = BigDecimal(100.00), mcc = "1234", merchant = "Test Merchant")
         `when`(findAccountOutputPort.findAccountByUuId(uuid)).thenReturn(null)
 
-        // Act & Assert
-        val exception = assertThrows(NotFoundException::class.java) {
-            useCase.execute(input)
-        }
-        assertEquals("Account with id $uuid not found", exception.message)
+        // Act
+        val result = useCase.execute(input)
+
+        // Assert
+        assertEquals(ProcessTransactionResponseStatusEnum.REJECTED_BY_INTERNAL_ERROR.code, result)
     }
 
     @Test
@@ -110,6 +109,22 @@ class ProcessCreditCardTransactionUseCaseTest {
     }
 
     @Test
+    fun `should return a failure error code when the request fails`() {
+        // Arrange
+        val uuid = UUID.randomUUID()
+        val account = Account(id = 1, uuid = uuid, merchantId = 1, foodBalance = BigDecimal(700.00), cashBalance = BigDecimal(200.00), mealBalance = BigDecimal(100.00))
+        val input = ProcessCreditCardTransactionInput(accountId = account.uuid, totalAmount = BigDecimal(200.0), mcc = "7020", merchant = "Mercado do Zé")
+
+        `when`(findAccountOutputPort.findAccountByUuId(account.uuid)).thenThrow()
+
+        // Act
+        val result = useCase.execute(input)
+
+        // Assert
+        assertEquals(ProcessTransactionResponseStatusEnum.REJECTED_BY_INTERNAL_ERROR.code, result)
+    }
+
+    @Test
     fun `should throw NotFoundException when merchant is not found`() {
         // Arrange
         val uuid = UUID.randomUUID()
@@ -122,10 +137,10 @@ class ProcessCreditCardTransactionUseCaseTest {
         `when`(findMerchantCategoryCodeOutputPort.findByMerchantCategoryCode(input.mcc)).thenReturn(null)
         `when`(findMerchantOutputPort.findByName(merchant.name)).thenReturn(null)
 
-        // Act & Assert
-        val exception = assertThrows(NotFoundException::class.java) {
-            useCase.execute(input)
-        }
-        assertEquals("Merchant ${merchant.name} not found", exception.message)
+        // Act
+        val result = useCase.execute(input)
+
+        // Assert
+        assertEquals(ProcessTransactionResponseStatusEnum.REJECTED_BY_INTERNAL_ERROR.code, result)
     }
 }

@@ -20,19 +20,23 @@ class ProcessCreditCardTransactionUseCase(
 ): ProcessCreditCardTransactionInputPort {
 
     override fun execute(input: ProcessCreditCardTransactionInput): String {
-        val account = findAccountById(input.accountId)
-        val balanceType = resolveBalanceType(input)
+        try {
+            val account = findAccountById(input.accountId)
+            val balanceType = resolveBalanceType(input)
 
-        val transaction = Transaction(accountId = account.id, amount = input.totalAmount, balanceType = balanceType)
-        val processedTransactionOutput = processTransaction(transaction, account)
+            val transaction = Transaction(accountId = account.id, amount = input.totalAmount, balanceType = balanceType)
+            val processedTransactionOutput = processTransaction(transaction, account)
 
-        if (processedTransactionOutput.code == ProcessTransactionResponseStatusEnum.APPROVED.code) {
-            val updatedAccount = account.withdraw(processedTransactionOutput)
-            updateAccountOutputPort.updateAccount(updatedAccount)
+            if (processedTransactionOutput.code == ProcessTransactionResponseStatusEnum.APPROVED.code) {
+                val updatedAccount = account.withdraw(processedTransactionOutput)
+                updateAccountOutputPort.updateAccount(updatedAccount)
+            }
+
+            createTransactionOutputPort.createTransaction(transaction.copy(responseCode = processedTransactionOutput.code))
+            return processedTransactionOutput.code
+        } catch (error: Throwable) {
+            return ProcessTransactionResponseStatusEnum.REJECTED_BY_INTERNAL_ERROR.code
         }
-
-        createTransactionOutputPort.createTransaction(transaction.copy(responseCode = processedTransactionOutput.code))
-        return processedTransactionOutput.code
     }
 
     private fun findAccountById(accountId: UUID): Account =
